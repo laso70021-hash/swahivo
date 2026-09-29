@@ -1,0 +1,38 @@
+{
+  "url": "http://127.0.0.1:8081/",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "Swahivo",
+      "hasCanvas": false,
+      "bodyTextLen": 2978,
+      "bodyTextHash": "78b4555925cd9256e4c6a32420effca1508e8257deca6d13b1a5135702a749f0",
+      "bodyTextPrefix": "Swahivo Home Listings All listings For sale For rent Apartments ",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-built.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "Swahivo",
+      "hasCanvas": false,
+      "bodyTextLen": 2851,
+      "bodyTextHash": "c71c171db7db7751317e83922ad768cb6a8a733f9e15fc0e9e55a3c2223a6f2e",
+      "bodyTextPrefix": "Swahivo Add Listing Your Dream Home Awaits, Start Living Today D",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-built-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/app-builder-built.json",
+  "divergesFromBaseline": false,
+  "baselineReasons": []
+}
