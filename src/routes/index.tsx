@@ -14,10 +14,10 @@ import { PropertyCard } from "@/components/property-card";
 import { SearchPanel } from "@/components/search-panel";
 import {
   blogPosts,
-  locations,
   properties,
   propertyTypes,
 } from "@/lib/data";
+import { useLocations } from "@/lib/locations-store";
 
 export const Route = createFileRoute("/")({ component: HomePage });
 
@@ -31,6 +31,7 @@ const typeIcons = {
 } as const;
 
 function HomePage() {
+  const { locations } = useLocations();
   const featured = properties.filter((p) => p.featured).slice(0, 8);
   const locRail = useRef<HTMLDivElement>(null);
   const areaRail = useRef<HTMLDivElement>(null);

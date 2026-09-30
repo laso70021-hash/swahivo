@@ -20,6 +20,26 @@ export function SiteFooter() {
             Your trusted partner in finding, buying, renting and selling
             properties across Zanzibar & Tanzania.
           </p>
+          <div className="mt-4 space-y-1 text-xs text-footer-muted">
+            <p>
+              <strong className="text-paper/90">Main Branch:</strong> Stone Town, Zanzibar
+            </p>
+            <p>
+              <strong className="text-paper/90">Branches (Coming Soon):</strong> Dar es Salaam, Arusha
+            </p>
+            <p>
+              <strong className="text-paper/90">Phone:</strong>{" "}
+              <a href="tel:0771888881" className="hover:text-paper">
+                0771 888 881
+              </a>
+            </p>
+            <p>
+              <strong className="text-paper/90">Email:</strong>{" "}
+              <a href="mailto:hello@swahivo.com" className="hover:text-paper">
+                hello@swahivo.com
+              </a>
+            </p>
+          </div>
           <div className="mt-5 flex gap-3 text-footer-muted">
             <a href="https://facebook.com" aria-label="Facebook" className="hover:text-paper">
               <Facebook className="size-4" />
@@ -126,6 +146,16 @@ export function SiteFooter() {
                 Submit a Ticket
               </Link>
             </li>
+            <li>
+              <a
+                href="https://mail.hostinger.com/0/mailboxes/INBOX/1?p=1&c=all"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-sm text-brand hover:text-brand-hover font-semibold"
+              >
+                Staff Mail ↗
+              </a>
+            </li>
           </ul>
         </div>
 
@@ -160,8 +190,17 @@ export function SiteFooter() {
           </form>
         </div>
       </div>
-      <div className="border-t border-white/10 py-5 text-center text-xs text-footer-muted">
-        © 2024 Swahivo. All Rights Reserved.
+      <div className="border-t border-white/10 py-5 text-center text-xs text-footer-muted flex flex-wrap items-center justify-center gap-4">
+        <span>© 2024 Swahivo. All Rights Reserved.</span>
+        <span>•</span>
+        <a
+          href="https://mail.hostinger.com/0/mailboxes/INBOX/1?p=1&c=all"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-footer-muted hover:text-paper underline"
+        >
+          Staff Webmail (Hostinger)
+        </a>
       </div>
     </footer>
   );

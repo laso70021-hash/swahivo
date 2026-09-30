@@ -8,7 +8,12 @@ export type DbSource = "neon" | "pglite";
 const rawDatabaseUrl =
   typeof process !== "undefined" ? process.env.DATABASE_URL : undefined;
 const databaseUrl =
-  rawDatabaseUrl && rawDatabaseUrl.trim() ? rawDatabaseUrl : undefined;
+  rawDatabaseUrl &&
+  rawDatabaseUrl.trim() &&
+  (rawDatabaseUrl.startsWith("postgres://") ||
+    rawDatabaseUrl.startsWith("postgresql://"))
+    ? rawDatabaseUrl
+    : undefined;
 
 /**
  * Active backend: real **Neon** when `DATABASE_URL` is set (deployed / configured
@@ -137,11 +142,28 @@ async function createPgliteSql(): Promise<Sql> {
   // passes serialized on a global chain so concurrent callers never
   // double-apply.
   const migrate = async (): Promise<void> => {
-    const migrations = import.meta.glob("/migrations/*.sql", {
-      query: "?raw",
-      import: "default",
-      eager: true,
-    }) as Record<string, string>;
+    let migrations: Record<string, string> = {};
+    if (typeof import.meta.glob === "function") {
+      migrations = import.meta.glob("/migrations/*.sql", {
+        query: "?raw",
+        import: "default",
+        eager: true,
+      }) as Record<string, string>;
+    } else {
+      const fs = await import("node:fs/promises");
+      const path = await import("node:path");
+      const dir = path.resolve(process.cwd(), "migrations");
+      try {
+        const files = await fs.readdir(dir);
+        for (const file of files) {
+          if (file.endsWith(".sql")) {
+            migrations[`/migrations/${file}`] = await fs.readFile(path.join(dir, file), "utf8");
+          }
+        }
+      } catch {
+        // No migrations directory or read error
+      }
+    }
     const doneRows = await pg.query<{ name: string }>(
       "select name from _migrations",
     );

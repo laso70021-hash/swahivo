@@ -13,7 +13,11 @@ import { auth, authConfigured } from "./server";
  */
 
 /** True when a real database is configured server-side. */
-const databaseConfigured = Boolean(process.env.DATABASE_URL?.trim());
+const databaseConfigured = Boolean(
+  process.env.DATABASE_URL?.trim() &&
+    (process.env.DATABASE_URL.startsWith("postgres://") ||
+      process.env.DATABASE_URL.startsWith("postgresql://")),
+);
 
 /** Re-export so callers can branch on it without importing `server.ts`. */
 export { authConfigured };

@@ -2,11 +2,40 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { ListingType, Property, PropertyType } from "@/lib/data";
 
-type SessionUser = { name: string; email: string };
+export type UserRole = "admin" | "agent" | "user";
+
+export type SessionUser = {
+  id: string;
+  name: string;
+  email: string;
+  role: UserRole;
+  agentId?: string;
+  phone?: string;
+};
+
+export const SUPER_ADMIN_EMAIL = "nithonia67@gmail.com";
+
+export function determineUserRole(email: string, requestedRole?: UserRole): { role: UserRole; agentId?: string } {
+  const normalized = email.trim().toLowerCase();
+  if (normalized === SUPER_ADMIN_EMAIL.toLowerCase()) {
+    return { role: "admin" };
+  }
+  if (normalized === "aisha@swahivo.com") return { role: "agent", agentId: "aisha-mwinyi" };
+  if (normalized === "daniel@swahivo.com") return { role: "agent", agentId: "daniel-msuya" };
+  if (normalized === "neema@swahivo.com") return { role: "agent", agentId: "neema-lyimo" };
+  if (normalized === "omar@swahivo.com") return { role: "agent", agentId: "omar-juma" };
+  if (normalized === "zahra@swahivo.com") return { role: "agent", agentId: "zahra-hassan" };
+  if (normalized === "jabari@swahivo.com") return { role: "agent", agentId: "jabari-mwakasege" };
+  if (requestedRole) {
+    return { role: requestedRole, agentId: requestedRole === "agent" ? `agent-${normalized.split("@")[0]}` : undefined };
+  }
+  return { role: "user" };
+}
 
 type SessionState = {
   user: SessionUser | null;
-  login: (email: string, name?: string) => void;
+  login: (email: string, name?: string, role?: UserRole, agentId?: string) => void;
+  updateUser: (updates: Partial<SessionUser>) => void;
   logout: () => void;
 };
 
@@ -14,13 +43,23 @@ export const useSession = create<SessionState>()(
   persist(
     (set) => ({
       user: null,
-      login: (email, name) =>
+      login: (email, name, role, agentId) => {
+        const normEmail = email.trim().toLowerCase();
+        const resolved = determineUserRole(normEmail, role);
         set({
           user: {
-            email,
-            name: name?.trim() || email.split("@")[0] || "Guest",
+            id: resolved.role === "admin" ? "admin-nithonia" : `user-${normEmail.split("@")[0]}`,
+            email: normEmail,
+            name: name?.trim() || (resolved.role === "admin" ? "Super Administrator" : normEmail.split("@")[0] || "User"),
+            role: resolved.role,
+            agentId: agentId || resolved.agentId,
           },
-        }),
+        });
+      },
+      updateUser: (updates) =>
+        set((s) => ({
+          user: s.user ? { ...s.user, ...updates } : null,
+        })),
       logout: () => set({ user: null }),
     }),
     { name: "swahivo-session" },

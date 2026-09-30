@@ -2,9 +2,11 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { Search } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useLocations } from "@/lib/locations-store";
 
 export type SearchValues = {
   q: string;
+  city?: string;
   type: string;
   deal: string;
   price: string;
@@ -13,6 +15,7 @@ export type SearchValues = {
 
 const empty: SearchValues = {
   q: "",
+  city: "",
   type: "",
   deal: "",
   price: "",
@@ -27,11 +30,26 @@ export function SearchPanel({
   initial?: Partial<SearchValues>;
 }) {
   const navigate = useNavigate();
+  const { cities } = useLocations();
   const [values, setValues] = useState<SearchValues>({ ...empty, ...initial });
 
+  const initialQ = initial?.q;
+  const initialCity = initial?.city;
+  const initialType = initial?.type;
+  const initialDeal = initial?.deal;
+  const initialPrice = initial?.price;
+  const initialBeds = initial?.beds;
+
   useEffect(() => {
-    setValues({ ...empty, ...initial });
-  }, [initial?.q, initial?.type, initial?.deal, initial?.price, initial?.beds]);
+    setValues({
+      q: initialQ ?? "",
+      city: initialCity ?? "",
+      type: initialType ?? "",
+      deal: initialDeal ?? "",
+      price: initialPrice ?? "",
+      beds: initialBeds ?? "",
+    });
+  }, [initialQ, initialCity, initialType, initialDeal, initialPrice, initialBeds]);
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -39,6 +57,7 @@ export function SearchPanel({
       to: "/listings",
       search: {
         q: values.q || undefined,
+        city: values.city || undefined,
         type: values.type || undefined,
         deal: values.deal || undefined,
         price: values.price || undefined,
@@ -65,7 +84,7 @@ export function SearchPanel({
           <input
             value={values.q}
             onChange={(e) => setValues((v) => ({ ...v, q: e.target.value }))}
-            placeholder="Enter keyword or location"
+            placeholder="Enter keyword or area (e.g. Masaki, Stone Town, Njiro)"
             className="h-12 min-w-0 flex-1 bg-transparent text-sm text-ink outline-none placeholder:text-muted"
           />
         </div>
@@ -76,7 +95,21 @@ export function SearchPanel({
           Search
         </button>
       </div>
-      <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+
+      <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-5">
+        <select
+          className={selectClass}
+          value={values.city || ""}
+          onChange={(e) => setValues((v) => ({ ...v, city: e.target.value }))}
+        >
+          <option value="">All Locations</option>
+          {cities.map((c) => (
+            <option key={c} value={c}>
+              {c}
+            </option>
+          ))}
+        </select>
+
         <select
           className={selectClass}
           value={values.type}
@@ -90,6 +123,7 @@ export function SearchPanel({
           <option value="commercial">Commercial</option>
           <option value="condo">Condos</option>
         </select>
+
         <select
           className={selectClass}
           value={values.deal}
@@ -99,6 +133,7 @@ export function SearchPanel({
           <option value="sale">Buy</option>
           <option value="rent">Rent</option>
         </select>
+
         <select
           className={selectClass}
           value={values.price}
@@ -110,6 +145,7 @@ export function SearchPanel({
           <option value="500m">Under TZS 500M</option>
           <option value="1b">Under TZS 1B</option>
         </select>
+
         <select
           className={selectClass}
           value={values.beds}
